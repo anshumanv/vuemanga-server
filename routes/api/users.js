@@ -3,6 +3,8 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const { userRegistrationValidation, userLoginValidation } = require('../../utils/userValidation');
+
 
 // Models
 const User = require('../../models/User');
@@ -30,7 +32,8 @@ router.get('/me', passport.authenticate('jwt', {session: false}), (req, res) => 
 // Signup API
 router.post('/signup', (req,res) => {
   const { email, username, password, name } = req.body;
-  
+  const { error, valid } = userRegistrationValidation(req.body);
+
   User.findOne({
     $or: [
       {email},
@@ -58,7 +61,8 @@ router.post('/signup', (req,res) => {
 // Login API
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
-
+  const { error, valid } = userLoginValidation(req.body);
+  
   User.findOne({ email })
     .then(user => {
       if(!user) {
