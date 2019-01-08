@@ -46,7 +46,7 @@ router.post('/signup', (req,res) => {
 
       newUser.save()
         .then(newUser => {
-          const user = _.pick(currentUser, userData);
+          const user = _.pick(newUser, userData);
           res.json({ user });
         })
         .catch(err => console.log(err));
