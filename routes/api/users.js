@@ -54,4 +54,34 @@ router.post('/signup', (req,res) => {
   })
 })
 
+
+// Login API
+router.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email })
+    .then(user => {
+      if(!user) {
+        return res.status(404).json({ error: 'User not found' });
+      } else {
+        bcrypt.compare(password, user.password).then(isMatch => {
+          if(isMatch) {
+            const payload = {
+              id: user.id,
+              email: user.email,
+              username: user.username,
+              name: user.name
+            };
+
+            jwt.sign(payload, secretOrKey, { expiresIn: 12 * 60 * 60 }, (err, token) => {
+              res.json({ token: `Bearer ${token}`})
+            })
+          } else {
+            return res.status(404).json({ error: 'Incorrect Password'});
+          }
+        })
+      }
+    })
+})
+
 module.exports = router;

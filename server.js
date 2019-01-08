@@ -12,6 +12,8 @@ app.use(bodyParser.json());
 
 app.use(passport.initialize());
 
+require('./config/passport')(passport);
+
 app.use('/api/users', userRoutes);
 
 const port = process.env.PORT || 5000;
