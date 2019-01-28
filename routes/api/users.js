@@ -8,6 +8,7 @@ const { userRegistrationValidation, userLoginValidation } = require('../../utils
 
 // Models
 const User = require('../../models/User');
+
 const { secretOrKey } = require('../../config/keys');
 
 // Routes for /api/users

@@ -20,7 +20,30 @@ const UserSchema = new Schema({
   username: {
     type: String,
     trim: true
-  }
+  },
+  mangas: [
+    {
+      manga: {
+        type: Schema.Types.ObjectId,
+        ref: 'manga'
+      },
+      progress: {
+        type: Number,
+        default: 0
+      },
+      status: {
+        type: String,
+        enum: ['READING', 'DROPPED', 'ONHOLD', 'COMPLETED', 'PLANNED']},
+        required: true
+      },
+    }
+  ],
+  favourites: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'manga'
+    }
+  ]
 });
 
 // Pre save hook on User model

@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 
 const mongoose = require('./db/mongoose');
 const userRoutes = require('./routes/api/users');
+const mangaRoutes = require('./routes/api/manga');
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/manga', mangaRoutes);
 
 const port = process.env.PORT || 5000;
 

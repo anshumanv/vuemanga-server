@@ -3,6 +3,8 @@ const { mongoURI } = require('../config/keys');
 
 mongoose.Promise = global.Promise;
 
+mongoose.set('useFindAndModify', false);
+
 mongoose
 	.connect(
 		mongoURI,
