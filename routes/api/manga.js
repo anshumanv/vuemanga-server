@@ -87,23 +87,31 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
 
 // ROUTE -      /api/manga/:mangaId
 // DESC -       Delete a manga from the user profile
-router.delete('/:manga', passport.authenticate('jwt', {session: false}), (req, res) => {
+router.delete('/:mangaId', passport.authenticate('jwt', {session: false}), (req, res) => {
   // Reject if the manga id is not valid
-  const { manga } = req.params
+  const { mangaId } = req.params
   
-  if(!mongoose.Types.ObjectId.isValid(manga))
+  if(!mongoose.Types.ObjectId.isValid(mangaId))
     return res.status(400).json({ error: 'Invalid mangaId' });
   
   User.findByIdAndUpdate(
     req.user._id,
-    { $pull: { mangas: { _id: manga }} },
-    { multi: true }
+    { $pull: { mangas: mangaId } },
+    { multi: true, new: true }
     ).then(user => {
       console.log(user)
-      Manga.findByIdAndRemove(manga).then(mangas => console.log(mangas))
+      Manga.findByIdAndRemove(
+        mangaId, (err) => {
+          console.log(err)
+          if(err) {
+            res.send(err)
+          }
+        })
+        // .then(mangas => res.json(mangas))
+        // .catch(err => res.status(500).json({ error: 'Not able to delete the manga', errorMsg: err}));
       res.json(user.mangas)
     })
-    .catch(err => res.status(500).json({ error: 'Not able to delete the manga', errorMsg: err}));
+    .catch(err => res.status(500).json({ error: 'Not able to remove the manga from the user', errorMsg: err}));
     
   });
   
