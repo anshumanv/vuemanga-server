@@ -127,6 +127,23 @@ router.put('/:mId/progress/:count', passport.authenticate('jwt', {session: false
 });
 
 
+// ROUTE -      /api/manga/:mId/favourite
+// DESC -       Update the progress of a manga
+router.put('/:mId/status/', passport.authenticate('jwt', {session: false}), (req, res) => {
+  // Get the mangaId and the progress
+  const { mId } = req.params;
+  const { status } = req.query;
+  if(!mongoose.Types.ObjectId.isValid(mId))
+    return res.status(400).json({ error: 'Invalid mangaId' });
+
+  Manga.findByIdAndUpdate(
+    mId,
+    { $set: { status } }
+  ).then(data => res.json({success: true, message: 'Progress updated successfully'}))
+  .catch(err => res.status(500).json({ error: 'Not able to set the progress', errorMsg: err}));
+});
+
+
 // <--------------------------------->
 
 // DELETE
