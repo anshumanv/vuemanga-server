@@ -10,7 +10,7 @@ const User = require('../../models/User');
 
 // Routes for /api/manga
 
-// Data used
+// Data used to populate manga
 const mangaData = ['_id', 'mangaId', 'name', 'status', 'progress'];
 
 

@@ -14,12 +14,14 @@ const { secretOrKey } = require('../../config/keys');
 // Routes for /api/users
 
 const userData = ['_id', 'name', 'password', 'username', 'mangas', 'favourites'];
+const mangaData = ['_id', 'name', 'mangaId', 'progress', 'status'];
 
 // GET
 
 // Get user profile
 router.get('/me', passport.authenticate('jwt', {session: false}), (req, res) => {
   User.findById(req.user._id)
+    .populate('mangas', mangaData)
     .then(currentUser => {
       const user = _.pick(currentUser, userData);
       res.json({ user });
