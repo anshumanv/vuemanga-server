@@ -44,7 +44,7 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
   const { mangaId, status, name } = req.body;
   
   
-  Manga.find({ mangaId, userId: req.user._id }, (err, count) => {
+  Manga.find({ mangaId, forUser: req.user._id }, (err, count) => {
     if(count.length > 0) {
       // Manga exists in the db, don't create a new object
       res.status(500).json({ error: 'Manga already exists' })
@@ -54,7 +54,8 @@ router.post('/', passport.authenticate('jwt', {session: false}), (req, res) => {
       const manga = new Manga({
         name,
         mangaId,
-        status
+        status,
+        forUser: req.user._id
       })
 
       // 1. Save the manga
