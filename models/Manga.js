@@ -7,28 +7,24 @@ const MangaSchema = new Schema({
     required: true,
     trim: true
   },
+  forUser: {
+    type: Schema.Types.ObjectId,
+    ref: 'user'
+  },
   name: {
     type: 'String',
     required: true,
     trim: true
   },
-  ratings: [
-    {
-      user: {
-        type: Schema.Types.ObjectId,
-        ref: 'user'
-      },
-      score: {
-        type: Number,
-      }
-    }
-  ],
-  favouritedBy: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'user'
-    }
-  ]
+  progress: {
+    type: Number,
+    default: 0
+  },
+  status: {
+    type: String,
+    enum: ['READING', 'DROPPED', 'ONHOLD', 'COMPLETED', 'PLANNED'],
+    required: true
+  }
 })
 
 

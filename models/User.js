@@ -23,19 +23,8 @@ const UserSchema = new Schema({
   },
   mangas: [
     {
-      manga: {
-        type: Schema.Types.ObjectId,
-        ref: 'manga'
-      },
-      progress: {
-        type: Number,
-        default: 0
-      },
-      status: {
-        type: String,
-        enum: ['READING', 'DROPPED', 'ONHOLD', 'COMPLETED', 'PLANNED']},
-        required: true
-      },
+      type: Schema.Types.ObjectId,
+      ref: 'manga'
     }
   ],
   favourites: [
