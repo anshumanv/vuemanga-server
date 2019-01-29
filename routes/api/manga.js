@@ -96,7 +96,7 @@ router.put('/:mId/favourite', passport.authenticate('jwt', {session: false}), (r
         { $pull: { favourites: mId }},
         { new: true, multi: true }
       ).then(user => {
-        res.json(user.favourites)
+        res.json({ favourites })
       }).catch(err => res.status(500).json({ error: 'Not able to favourite the manga', errorMsg: err}));
     } else {
       // Manga is not a favourite so add it
@@ -105,10 +105,25 @@ router.put('/:mId/favourite', passport.authenticate('jwt', {session: false}), (r
         { $addToSet: { favourites: mId }},
         { new: true }
       ).then(user => {
-        res.json(user.favourites)
+        res.json({ favourites })
       }).catch(err => res.status(500).json({ error: 'Not able to favourite the manga', errorMsg: err}));
     }
   })
+});
+
+// ROUTE -      /api/manga/:mId/favourite
+// DESC -       Update the progress of a manga
+router.put('/:mId/progress/:count', passport.authenticate('jwt', {session: false}), (req, res) => {
+  // Get the mangaId and the progress
+  const { mId, count } = req.params;
+  if(!mongoose.Types.ObjectId.isValid(mId))
+    return res.status(400).json({ error: 'Invalid mangaId' });
+
+  Manga.findByIdAndUpdate(
+    mId,
+    { $set: { progress: count } }
+  ).then(data => res.json({success: true, message: 'Progress updated successfully'}))
+  .catch(err => res.status(500).json({ error: 'Not able to set the progress', errorMsg: err}));
 });
 
 
@@ -140,7 +155,7 @@ router.delete('/:mangaId', passport.authenticate('jwt', {session: false}), (req,
         })
         // .then(mangas => res.json(mangas))
         // .catch(err => res.status(500).json({ error: 'Not able to delete the manga', errorMsg: err}));
-      res.json(user.mangas)
+      res.json({ mangas })
     })
     .catch(err => res.status(500).json({ error: 'Not able to remove the manga from the user', errorMsg: err}));
     
