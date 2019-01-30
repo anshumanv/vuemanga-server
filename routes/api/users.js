@@ -45,7 +45,7 @@ router.post('/signup', (req,res) => {
     ]
   }).then(currentUser => {
     if(currentUser) {
-      throw new Error('User with this email or username exists!');
+      res.status(400).json({ error: 'User with this email or username already exists.' })
     } else {
       const newUser = new User({
         name, username, password, email
@@ -54,7 +54,15 @@ router.post('/signup', (req,res) => {
       newUser.save()
         .then(newUser => {
           const user = _.pick(newUser, userData);
-          res.json({ user });
+          const jwtPayload = {
+            _id: newUser._id,
+            email: newUser.email,
+            username: newUser.username,
+            name: newUser.name
+          }
+          jwt.sign(jwtPayload, secretOrKey, { expiresIn: 12 * 60 * 60 * 60 }, (err, token) => {
+            res.status(201).json({ user, token: `Bearer ${token}`})
+          })
         })
         .catch(err => res.status(500).json({ error: 'Failed to save the user', errorMsg: err}));
     }   
@@ -75,7 +83,7 @@ router.post('/login', (req, res) => {
         bcrypt.compare(password, user.password).then(isMatch => {
           if(isMatch) {
             const payload = {
-              id: user.id,
+              _id: user._id,
               email: user.email,
               username: user.username,
               name: user.name
@@ -95,12 +103,13 @@ router.post('/login', (req, res) => {
 
 // PUT
 
-// Update the username of the user
+// Update the profile of the user
 router.put('/profile', passport.authenticate('jwt', {session: false}), (req, res) => {
-  const { username } = req.body
+  const { name, email, username, password } = req.body
   User.findByIdAndUpdate(
     req.user._id,
-    { $set: { username: username }}
+    { $set: { username }},
+    { new: true }
   ).then(user => res.json(user))
   .catch(err => res.status(400).json({ error: 'Username is already taken', errorMsg: err}));
 });
