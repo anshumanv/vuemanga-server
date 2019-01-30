@@ -19,7 +19,8 @@ const UserSchema = new Schema({
   },
   username: {
     type: String,
-    trim: true
+    trim: true,
+    unique: true
   },
   mangas: [
     {

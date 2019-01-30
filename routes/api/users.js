@@ -13,7 +13,7 @@ const { secretOrKey } = require('../../config/keys');
 
 // Routes for /api/users
 
-const userData = ['_id', 'name', 'password', 'username', 'mangas', 'favourites'];
+const userData = ['_id', 'email', 'name', 'username', 'mangas', 'favourites'];
 const mangaData = ['_id', 'name', 'mangaId', 'progress', 'status'];
 
 // GET
@@ -23,10 +23,11 @@ router.get('/me', passport.authenticate('jwt', {session: false}), (req, res) => 
   User.findById(req.user._id)
     .populate('mangas', mangaData)
     .then(currentUser => {
+      console.log(currentUser)
       const user = _.pick(currentUser, userData);
       res.json({ user });
     })
-    .catch(err => console.log(err))
+    .catch(err => res.status(404).json({ error: 'No profile found', errorMsg: err}));
 });
 
 
@@ -55,7 +56,7 @@ router.post('/signup', (req,res) => {
           const user = _.pick(newUser, userData);
           res.json({ user });
         })
-        .catch(err => console.log(err));
+        .catch(err => res.status(500).json({ error: 'Failed to save the user', errorMsg: err}));
     }   
   })
 })
@@ -80,7 +81,7 @@ router.post('/login', (req, res) => {
               name: user.name
             };
 
-            jwt.sign(payload, secretOrKey, { expiresIn: 12 * 60 * 60 }, (err, token) => {
+            jwt.sign(payload, secretOrKey, { expiresIn: 12 * 60 * 60 * 60 }, (err, token) => {
               res.json({ token: `Bearer ${token}`})
             })
           } else {
@@ -90,5 +91,18 @@ router.post('/login', (req, res) => {
       }
     })
 })
+
+
+// PUT
+
+// Update the username of the user
+router.put('/profile', passport.authenticate('jwt', {session: false}), (req, res) => {
+  const { username } = req.body
+  User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { username: username }}
+  ).then(user => res.json(user))
+  .catch(err => res.status(400).json({ error: 'Username is already taken', errorMsg: err}));
+});
 
 module.exports = router;
