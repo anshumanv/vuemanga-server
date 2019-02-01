@@ -15,14 +15,17 @@ app.use(passport.initialize());
 
 require('./config/passport')(passport);
 
-app.use(function(req, res, next) {
+app.use(function(req, res, next) {  
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials");
+  res.header("Access-Control-Allow-Credentials", "true");
   next();
 });
 
 app.use('/api/users', userRoutes);
 app.use('/api/manga', mangaRoutes);
+
 
 const port = process.env.PORT || 5000;
 

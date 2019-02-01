@@ -18,9 +18,10 @@ const mangaData = ['_id', 'name', 'mangaId', 'progress', 'status'];
 
 // GET
 
-// Get user profile
-router.get('/me', passport.authenticate('jwt', {session: false}), (req, res) => {
-  User.findById(req.user._id)
+// Get user data by username
+router.get('/:username', (req, res) => {
+  const { username } = req.params
+  User.findOne({ username })
     .populate('mangas', mangaData)
     .then(currentUser => {
       console.log(currentUser)
@@ -90,7 +91,7 @@ router.post('/login', (req, res) => {
             };
 
             jwt.sign(payload, secretOrKey, { expiresIn: 12 * 60 * 60 * 60 }, (err, token) => {
-              res.json({ token: `Bearer ${token}`})
+              res.json({ success: true, token: `Bearer ${token}`})
             })
           } else {
             return res.status(404).json({ error: 'Incorrect Password'});
@@ -105,10 +106,10 @@ router.post('/login', (req, res) => {
 
 // Update the profile of the user
 router.put('/profile', passport.authenticate('jwt', {session: false}), (req, res) => {
-  const { name, email, username, password } = req.body
+  const { name, username } = req.body
   User.findByIdAndUpdate(
     req.user._id,
-    { $set: { username }},
+    { $set: { username, name }},
     { new: true }
   ).then(user => res.json(user))
   .catch(err => res.status(400).json({ error: 'Username is already taken', errorMsg: err}));
