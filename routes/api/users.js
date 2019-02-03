@@ -13,7 +13,7 @@ const { secretOrKey } = require('../../config/keys');
 
 // Routes for /api/users
 
-const userData = ['_id', 'email', 'name', 'username', 'mangas', 'favourites'];
+const userData = ['_id', 'email', 'name', 'username', 'mangas', 'favorites'];
 const mangaData = ['_id', 'name', 'mangaId', 'progress', 'status'];
 
 // GET

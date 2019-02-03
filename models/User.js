@@ -28,7 +28,7 @@ const UserSchema = new Schema({
       ref: 'manga'
     }
   ],
-  favourites: [
+  favorites: [
     {
       type: Schema.Types.ObjectId,
       ref: 'manga'
