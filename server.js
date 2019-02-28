@@ -1,10 +1,13 @@
 const express = require('express');
 const passport = require('passport');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
 const mongoose = require('./db/mongoose');
 const userRoutes = require('./routes/api/users');
 const mangaRoutes = require('./routes/api/manga');
+
+dotenv.config()
 
 const app = express();
 
