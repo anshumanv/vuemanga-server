@@ -4,8 +4,6 @@
 
 <h1 align="center"> vuemanga-server </h1>
 
-<hr>
-
 <p align="center">Backend for vueman.ga</p>
 
 ## Demo
@@ -30,6 +28,11 @@ Update the file with appropriate values.
 ```sh
 npm run server
 ```
+
+
+### Related
+
+* Frontend that uses this server is [here](https://github.com/anshumanv/vueman.ga)
 
 ### Author
 
