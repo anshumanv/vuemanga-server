@@ -20,6 +20,10 @@ const userRegistrationValidation = ({ name, email, password }) => {
 		error.password = 'No password specified';
 	}
 
+	if (Validator.isLength(password, { min: 5, max: 16 })) {
+		error.password = 'Length of password must be between 5 and 16';
+	}
+
 	return {
 		error,
 		valid: isEmpty(error)
